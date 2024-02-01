@@ -23,8 +23,12 @@ import {
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/20/solid'
 
-import {ref, onBeforeMount} from 'vue'
-import store from "../../store/index.js";
+import {ref, onMounted, watchEffect} from 'vue'
+import { useStore } from "vuex";
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const store = useStore();
 
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon, current: true },
@@ -33,11 +37,33 @@ const navigation = [
 const userNavigation = [
   { name: 'Meu perfil', href: '#' },
   { name: 'Login', href: '/login' },
-  { name: 'Sair', href: '#', method: store.dispatch('logoutUser') },
+  { name: 'Sair', href: '#', method: 'handleLogoutUser' }
 ]
 
 const sidebarOpen = ref(false)
 
+const currentRouteName = ref('');
+
+/*onMounted(() => {
+  currentRouteName.value = route.name;
+});
+
+watchEffect(() => {
+  currentRouteName.value = route.name;
+});*/
+
+function handleItemClick(item) {
+  const method = item.method;
+  if (method && typeof methods[method] === 'function') {
+    methods[method]();
+  }
+}
+
+const methods = {
+   handleLogoutUser() {
+    store.dispatch('logout')
+  }
+}
 </script>
 
 <template>
@@ -125,7 +151,12 @@ const sidebarOpen = ref(false)
             <MagnifyingGlassIcon class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400" aria-hidden="true" />
             <input id="search-field" class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm" placeholder="Procurar..." type="search" name="search" />
           </form>
+
           <div class="flex items-center gap-x-4 lg:gap-x-6">
+            <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+              Admin
+            </span>
+
             <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
               <span class="sr-only">Ver notificações</span>
               <BellIcon class="h-6 w-6" aria-hidden="true" />
@@ -147,7 +178,7 @@ const sidebarOpen = ref(false)
               <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                 <MenuItems class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
                   <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                    <a :href="item.href" @click.prevent="item.method" :class="[active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900']">{{ item.name }}</a>
+                    <a @click="handleItemClick(item)" :href="item.href" :class="[active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900']">{{ item.name }}</a>
                   </MenuItem>
                 </MenuItems>
               </transition>
@@ -158,10 +189,15 @@ const sidebarOpen = ref(false)
 
       <main class="py-10">
         <div class="px-4 sm:px-6 lg:px-8">
-          <!-- Your content -->
-          <router-view />
+          <transition class="animate__animated animate__fadeIn">
+            <router-view />
+          </transition>
         </div>
       </main>
     </div>
   </div>
 </template>
+
+<style>
+
+</style>

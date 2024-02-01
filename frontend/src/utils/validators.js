@@ -1,18 +1,5 @@
-/* Validação para senha */
-export function validateEmptyAndLength3 (value) {
-  if (!value) {
-    return '*Este campo é obrigatório'
-  }
-
-  if (value.length < 3) {
-    return '*Este campo precisa de no mínimo 3 caracteres'
-  }
-
-  return true
-}
-
 /* Validação para email */
-export function validateEmptyAndUsername (value) {
+export function validateEmptyAndEmail (value) {
   if (!value) {
     return '*Este campo é obrigatório'
   }
@@ -21,6 +8,19 @@ export function validateEmptyAndUsername (value) {
 
   if (!isValid) {
     return '*Este campo precisa ser um e-mail'
+  }
+
+  return true
+}
+
+/* Validação para senha e username*/
+export function validateEmptyAndLength3 (value) {
+  if (!value) {
+    return '*Este campo é obrigatório'
+  }
+
+  if (value.length < 3) {
+    return '*Este campo precisa de no mínimo 3 caracteres'
   }
 
   return true

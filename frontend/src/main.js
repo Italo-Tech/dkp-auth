@@ -8,7 +8,7 @@ import Toast, { POSITION } from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 
 import router from "./router/index.js";
-import store from "./store/index.js";
+import store from "./store";
 
 createApp(App)
     .use(router)

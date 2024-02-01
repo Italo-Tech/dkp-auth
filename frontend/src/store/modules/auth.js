@@ -7,19 +7,7 @@ const toast = useToast();
 const auth = {
   state: {
     isAuthenticated: false,
-    error_login: {},
-    login: {
-      user: {
-        email: null,
-        password: null,
-      },
-    },
     data: [],
-    user: {},
-    register: {
-      email: null,
-      password: null,
-    }
   },
   getters: {
 
@@ -36,26 +24,13 @@ const auth = {
     },
   },
   actions: {
-    getCars(context) {
-      api.get('http://localhost:3000/api/cars').then(response => {
-        console.log(response.data.result)
-        context.commit("SET_CARS", response.data.result)
-        // stop no loading
-      }).catch(error => {
-        if (error.response.status === 401) {
-          // Fazer logout
-        } else {
-          //Toast de erro
-          Toast.error('Erro ao obter carros')
-
-        }
-      });
-    },
     loginUser(context, payload) {
-      api.post(`http://localhost:3000/login`, payload).then(response => {
+      api.post(`http://localhost:8080/api/auth/signin`, payload).then(response => {
         toast.success("Login efetuado !", { timeout: 2500 });
-        context.commit('SET_AUTHENTICATED', true)
-        window.localStorage.setItem('token', response.data.token)
+        // context.commit('SET_AUTHENTICATED', true)
+        if (response.data.accessToken) {
+          window.localStorage.setItem('token', JSON.stringify(response.data.accessToken))
+        }
         setTimeout(() => {
           router.push({ name: 'Users' })
         }, 1500)
@@ -73,25 +48,32 @@ const auth = {
       });
     },
     createUser(context, payload) {
-      api.post(`http://localhost:3000/register`, payload).then(response => {
+      api.post(`http://localhost:8080/api/auth/signup`, payload).then(response => {
         toast.success("Usuário criado !", { timeout: 2500 });
         setTimeout(() => {
           router.push({ name: 'Login' })
         }, 1500)
       }).catch(error => {
         console.log('Erro ao criar usuário', error)
+        if(error.request.status === 400) {
+          toast.error("Email já em uso !", { timeout: 2500 });
+        }
       });
     },
-    /*logoutUser(context) {
-      console.log('logoutUser')
-      api.post(`/logout`).then((response) => {
-        window.localStorage.removeItem('token')
-        context.commit('SET_AUTHENTICATED', false)
-        router.push({ name: 'Login' })
-      }).catch(error => {
-        window.localStorage.clear()
-      });
-    },*/
+    logout() {
+      if(localStorage.getItem('token')) {
+        localStorage.removeItem('token');
+        toast.info("Saindo...", { timeout: 2500 });
+        setTimeout(() => {
+          router.push({ name: 'Login' })
+        }, 1500)
+      } else {
+        toast.error("Você ainda não fez login...", { timeout: 2500 });
+        setTimeout(() => {
+          router.push({ name: 'Login' })
+        }, 1500)
+      }
+    }
   }
 }
 export default auth;
