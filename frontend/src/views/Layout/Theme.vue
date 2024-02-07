@@ -26,17 +26,21 @@ import { ChevronDownIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/2
 import {ref, onMounted, watchEffect} from 'vue'
 import { useStore } from "vuex";
 import { useRoute } from 'vue-router';
+import Modals from "../../components/general/Modals.vue";
 
 const route = useRoute();
 const store = useStore();
 
+onMounted(() => {
+
+});
+
 const navigation = [
-  { name: 'Home', href: '/', icon: HomeIcon, current: true },
-  { name: 'Usuários', href: '/users', icon: UsersIcon, current: false },
+  { name: 'Home', href: '/', icon: 'fa-solid fa-house', current: route.path === '/' },
+  { name: 'Usuários', href: '/users', icon: 'fa-solid fa-users', current: route.path === '/users' },
 ]
 const userNavigation = [
-  { name: 'Meu perfil', href: '#' },
-  { name: 'Login', href: '/login' },
+  { name: 'Meu perfil', href: '/profile' },
   { name: 'Sair', href: '#', method: 'handleLogoutUser' }
 ]
 
@@ -96,7 +100,7 @@ const methods = {
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
                           <a :href="item.href" :class="[item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
-                            <component :is="item.icon" class="h-6 w-6 shrink-0" aria-hidden="true" />
+                            <i :class="item.icon" class="h-6 w-6 shrink-0"  />
                             {{ item.name }}
                           </a>
                         </li>
@@ -115,16 +119,16 @@ const methods = {
     <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
       <!-- Sidebar component, swap this element with another sidebar if you like -->
       <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
-        <div class="flex h-16 shrink-0 items-center">
-          <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
+        <div class="flex items-center">
+          <img class="w-AUTO h-36" src="../../assets/images/logo-2.png" alt="Orquestra sinfônica do estado de São Paulo OSESP" />
         </div>
         <nav class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
             <li>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
-                  <a :href="item.href" :class="[item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
-                    <component :is="item.icon" class="h-6 w-6 shrink-0" aria-hidden="true" />
+                  <a :href="item.href" class="flex items-center" :class="[item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
+                    <i :class="item.icon" class="fa-lg"></i>
                     {{ item.name }}
                   </a>
                 </li>
@@ -189,12 +193,18 @@ const methods = {
 
       <main class="py-10">
         <div class="px-4 sm:px-6 lg:px-8">
-          <transition class="animate__animated animate__fadeIn">
-            <router-view />
-          </transition>
+          <router-view v-slot="{ Component }">
+            <transition class="animate__animated animate__fadeIn">
+              <keep-alive>
+                <component :is="Component"/>
+              </keep-alive>
+            </transition>
+          </router-view>
         </div>
       </main>
     </div>
+
+    <Modals />
   </div>
 </template>
 

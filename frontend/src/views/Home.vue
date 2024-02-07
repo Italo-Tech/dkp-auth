@@ -1,10 +1,14 @@
 <script setup>
 
+import HeaderSession from "../components/HeaderSession.vue";
+import auth from "../store/modules/auth.js";
 </script>
 
 <template>
 <div>
-  Home Page
+  <HeaderSession session="Dashboard" sub-session="Visão geral de dados e informações"/>
+
+  {{ auth.state }}
 </div>
 </template>
 

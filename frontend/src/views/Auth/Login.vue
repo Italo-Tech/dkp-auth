@@ -18,7 +18,6 @@ export default {
       errorMessage: passwordErrorMessage
     } = useField('password', validateEmptyAndLength3)
 
-
     const state = reactive({
       hasError: false,
       isLoading: false,

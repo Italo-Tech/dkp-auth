@@ -77,13 +77,13 @@ export default {
           </h1>
 
           <form class="space-y-4 md:space-y-6" @submit.prevent="register">
-            <!--Name-->
+            <!--User Name-->
             <div>
-              <label class="block mb-2 text-sm font-medium text-gray-900 ">Nome</label>
+              <label class="block mb-2 text-sm font-medium text-gray-900 ">Usuário</label>
               <input v-model="state.register_account.username.value"
                      :class="{ 'border-red-300': !!state.register_account.username.errorMessage }" type="text"
                      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-md focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5"
-                     placeholder="Informe seu usuário">
+                     placeholder="Usado para login">
               <span id="username-error" v-if="!!state.register_account.username.errorMessage" class="block font-medium text-sm text-red-400">
                 {{ state.register_account.username.errorMessage }}
               </span>
